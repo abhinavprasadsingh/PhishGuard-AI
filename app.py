@@ -112,58 +112,44 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 :root { color-scheme: dark; }
 html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
-.stApp {
-  background:
-    radial-gradient(ellipse at 8% 0%, rgba(25, 91, 115, .28), transparent 34%),
-    radial-gradient(ellipse at 95% 20%, rgba(31, 77, 124, .18), transparent 30%),
-    #070c14;
-  color: #e9f1fb;
-}
-.block-container { max-width: 1220px; padding-top: 1.15rem; padding-bottom: 3.5rem; }
-[data-testid="stHeader"] { background: rgba(7,12,20,.78); }
-[data-testid="stSidebar"] { background: linear-gradient(180deg,#0d1827 0%,#0a111c 100%); border-right: 1px solid #1d3043; }
-[data-testid="stSidebar"] > div { padding-top: 1.4rem; }
-.hero {
-  position: relative; overflow: hidden; padding: clamp(1.5rem,4vw,3.1rem);
-  border: 1px solid rgba(83, 224, 204, .24); border-radius: 28px;
-  background: linear-gradient(120deg,rgba(18,47,67,.98),rgba(11,21,37,.98) 62%,rgba(12,29,48,.96));
-  margin: .3rem 0 1.8rem; box-shadow: 0 22px 65px rgba(0,0,0,.22);
-}
-.hero:after { content:""; position:absolute; width:260px; height:260px; right:-85px; top:-105px; border:1px solid rgba(105,230,207,.13); border-radius:50%; box-shadow:0 0 0 30px rgba(105,230,207,.025),0 0 0 65px rgba(105,230,207,.02); pointer-events:none; }
-.eyebrow { color:#72ead6; letter-spacing:.19em; text-transform:uppercase; font-size:.72rem; font-weight:800; }
-.hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(2.4rem,5.5vw,4.2rem); line-height:1.03; letter-spacing:-.045em; margin:.8rem 0 .9rem; color:#f3f7ff; }
-.hero p { color:#bdcddd; font-size:1.05rem; line-height:1.75; max-width:760px; }
-.pill { display:inline-flex; align-items:center; padding:.42rem .75rem; border:1px solid #31566b; border-radius:999px; color:#d0e3ed; font-size:.76rem; margin:.4rem .35rem 0 0; background:rgba(8,20,33,.35); }
-.panel { padding:1.25rem 1.3rem; border-radius:18px; background:linear-gradient(145deg,rgba(17,33,52,.94),rgba(12,23,37,.92)); border:1px solid #23394e; height:100%; box-shadow:0 10px 28px rgba(0,0,0,.10); }
-.muted, [data-testid="stCaptionContainer"] { color:#9aafc5; font-size:.9rem; }
-h1,h2,h3,h4 { font-family:'Space Grotesk',sans-serif !important; letter-spacing:-.025em; }
-h2, h3 { color:#f0f6ff; }
-p { line-height:1.65; }
-div[data-testid="stMetric"] { background:linear-gradient(145deg,rgba(19,39,60,.95),rgba(12,25,41,.95)); border:1px solid #2b475e; padding:1rem 1.1rem; border-radius:16px; }
-div[data-testid="stMetricLabel"] { color:#a8bfd2; }
-div[data-testid="stMetricValue"] { color:#75ead6; font-family:'Space Grotesk',sans-serif; }
-.stTextInput input { background:#0c1726 !important; border:1px solid #2c435a !important; border-radius:12px !important; min-height:3.15rem; color:#f2f7ff !important; }
-.stTextInput input:focus { border-color:#69e6cf !important; box-shadow:0 0 0 1px #69e6cf !important; }
-.stButton button, .stFormSubmitButton button { border-radius:12px; font-weight:700; min-height:2.9rem; transition:all .18s ease; }
-.stButton button[kind="primary"], .stFormSubmitButton button[kind="primary"] { background:linear-gradient(100deg,#58ddc8,#8af0d9); color:#07151d; border:0; }
-.stButton button[kind="primary"]:hover, .stFormSubmitButton button[kind="primary"]:hover { filter:brightness(1.06); box-shadow:0 7px 24px rgba(87,221,200,.18); }
-div[data-testid="stExpander"] { border:1px solid #22394e; border-radius:14px; background:rgba(11,22,36,.55); overflow:hidden; }
-div[data-testid="stDataFrame"] { border:1px solid #20364d; border-radius:12px; overflow:hidden; }
-hr { border-color:#213449; }
-a { color:#77e9d7 !important; }
-footer {visibility:hidden;}
-@media (max-width: 700px) {
-  .block-container { padding: .7rem .85rem 2.5rem; }
-  .hero { border-radius:20px; padding:1.4rem; }
-  .hero p { font-size:.98rem; }
-  .pill { font-size:.7rem; }
-}
+.stApp { background: radial-gradient(ellipse at 12% -8%,rgba(26,108,133,.25),transparent 38%),radial-gradient(ellipse at 100% 30%,rgba(39,73,142,.16),transparent 34%),#070b12; color:#eaf1fb; }
+.block-container { max-width:1260px; padding:1.25rem 1.6rem 3.5rem; }
+[data-testid="stHeader"] { background:rgba(7,11,18,.72); }
+[data-testid="stSidebar"] { background:linear-gradient(180deg,#0c1725,#080e17); border-right:1px solid #1c3042; }
+[data-testid="stSidebar"] > div { padding-top:1.5rem; }
+.hero { position:relative; isolation:isolate; overflow:hidden; padding:clamp(1.7rem,4vw,3.4rem); border:1px solid rgba(103,235,215,.24); border-radius:30px; background:linear-gradient(112deg,rgba(15,43,61,.98),rgba(10,20,34,.98) 60%,rgba(13,31,49,.97)); margin:.25rem 0 1.8rem; box-shadow:0 28px 80px rgba(0,0,0,.27); }
+.hero:before { content:""; position:absolute; z-index:-1; width:330px; height:330px; right:-95px; top:-145px; border-radius:50%; border:1px solid rgba(103,235,215,.16); box-shadow:0 0 0 28px rgba(103,235,215,.025),0 0 0 62px rgba(103,235,215,.02),0 0 0 100px rgba(103,235,215,.014); }
+.hero:after { content:""; position:absolute; z-index:-1; width:180px; height:180px; right:8%; bottom:-150px; border-radius:50%; background:rgba(68,204,193,.12); filter:blur(20px); }
+.eyebrow { color:#75ecd9; letter-spacing:.2em; text-transform:uppercase; font-size:.7rem; font-weight:800; }
+.hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(2.6rem,6vw,4.6rem); line-height:1; letter-spacing:-.055em; margin:.9rem 0 1rem; color:#f5f8ff; }
+.hero p { color:#c0d0df; font-size:1.06rem; line-height:1.8; max-width:700px; margin-bottom:1.25rem; }
+.pill { display:inline-flex; align-items:center; padding:.45rem .8rem; border:1px solid #31546a; border-radius:999px; color:#d3e4ed; font-size:.76rem; margin:.3rem .35rem 0 0; background:rgba(6,16,27,.5); }
+.panel { padding:1.35rem 1.4rem; border-radius:20px; background:linear-gradient(145deg,rgba(17,34,53,.96),rgba(10,21,35,.94)); border:1px solid #243c52; height:100%; box-shadow:0 12px 32px rgba(0,0,0,.13); transition:border-color .2s,transform .2s,box-shadow .2s; }
+.panel:hover { border-color:#386b7c; box-shadow:0 16px 38px rgba(0,0,0,.2); }
+.muted,[data-testid="stCaptionContainer"] { color:#9db1c5; font-size:.9rem; }
+h1,h2,h3,h4 { font-family:'Space Grotesk',sans-serif !important; letter-spacing:-.03em; }
+h2,h3 { color:#f1f6ff; }
+p { line-height:1.7; }
+[data-testid="stMetric"] { background:linear-gradient(145deg,rgba(19,41,61,.98),rgba(11,24,39,.98)); border:1px solid #2b4a60; padding:1rem 1.1rem; border-radius:17px; }
+[data-testid="stMetricLabel"] { color:#a8bfd1; }
+[data-testid="stMetricValue"] { color:#77ead7; font-family:'Space Grotesk',sans-serif; }
+.stTextInput input { background:#0a1522 !important; border:1px solid #2b4358 !important; border-radius:13px !important; min-height:3.25rem; color:#f3f7ff !important; }
+.stTextInput input:focus { border-color:#6ce6d1 !important; box-shadow:0 0 0 1px #6ce6d1 !important; }
+.stButton button,.stFormSubmitButton button { border-radius:13px; font-weight:750; min-height:3rem; transition:all .18s ease; }
+.stButton button[kind="primary"],.stFormSubmitButton button[kind="primary"] { background:linear-gradient(100deg,#62dfca,#9af3dc); color:#07151d; border:0; box-shadow:0 5px 18px rgba(87,221,200,.08); }
+.stButton button[kind="primary"]:hover,.stFormSubmitButton button[kind="primary"]:hover { filter:brightness(1.07); box-shadow:0 8px 26px rgba(87,221,200,.2); transform:translateY(-1px); }
+[data-testid="stExpander"] { border:1px solid #23394d; border-radius:15px; background:rgba(10,21,34,.7); overflow:hidden; }
+[data-testid="stDataFrame"] { border:1px solid #20364d; border-radius:12px; overflow:hidden; }
+hr { border-color:#20354a; }
+a { color:#79ead8 !important; }
+footer { visibility:hidden; }
+@media(max-width:800px) { .block-container { padding:.75rem .85rem 2.5rem; } .hero { border-radius:22px; padding:1.5rem; } .hero h1 { font-size:clamp(2.4rem,11vw,3.4rem); } .hero p { font-size:.98rem; } .pill { font-size:.7rem; } }
 </style>
 <div class="hero">
   <div class="eyebrow">Threat awareness · URL intelligence</div>
-  <h1>PhishGuard <span style="color:#69e6cf">AI</span></h1>
-  <p>Pause before you click. Understand the signals behind a suspicious link with a transparent, privacy-minded URL risk assessment.</p>
-  <span class="pill">⌕ Explainable signals</span><span class="pill">⌁ No URL visits</span><span class="pill">✳ ML-ready</span>
+  <h1>PhishGuard <span style="color:#75ecd9">AI</span></h1>
+  <p>Trust the signal. Verify the source. Inspect suspicious links with transparent URL-pattern analysis designed with privacy in mind.</p>
+  <span class="pill">◈ Explainable signals</span><span class="pill">⌁ URL stays unvisited</span><span class="pill">✳ ML-ready workflow</span>
 </div>
 """, unsafe_allow_html=True)
 
