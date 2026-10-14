@@ -8,22 +8,27 @@ from urllib.parse import urlparse
 import streamlit as st
 import streamlit.components.v1 as components
 
-# Google Analytics 4: this component sends a page-view from its own iframe.
-# Verify events in GA4 Realtime after deployment; Streamlit does not expose a
-# supported hook for inserting scripts into the top-level document <head>.
+# Google Analytics 4 page-view tracking. Streamlit renders this snippet in
+# a component iframe, so explicitly set the public app URL as page_location.
+# This must be verified in GA4 Realtime after the app redeploys.
 GA_MEASUREMENT_ID = "G-6L7WQYZ1LK"
+GA_APP_URL = "https://phishsentinel.streamlit.app/"
 components.html(
     f"""
     <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {{ dataLayer.push(arguments); }}
+      function gtag() {{ window.dataLayer.push(arguments); }}
       gtag('js', new Date());
-      gtag('config', '{GA_MEASUREMENT_ID}', {{ send_page_view: true }});
+      gtag('config', '{GA_MEASUREMENT_ID}', {{
+        send_page_view: true,
+        page_location: '{GA_APP_URL}',
+        page_title: 'PhishShield'
+      }});
     </script>
     """,
-    height=0,
-    width=0,
+    height=1,
+    width=1,
 )
 
 ROOT = Path(__file__).resolve().parent
