@@ -1,6 +1,6 @@
 # PhishShield — Intelligent Phishing Detection 🛡️
 
-PhishShield is a web application that analyzes URLs for potential phishing indicators and presents clear, explainable risk signals. It helps users assess suspicious links by examining URL structure and hostname patterns, with support for a supervised machine-learning workflow to classify URLs as **potential phishing** or **likely legitimate**.
+PhishShield is a Python-based project that analyzes URL patterns to identify potentially suspicious links, with a Streamlit interface and machine learning model training and evaluation.
 
 > **Current project status:** The Streamlit app supports explainable heuristic demo mode and can load a trained model from `models/phishing_model.joblib` when that file is present. A supervised training run has completed in GitHub Actions using UCI PhiUSIIL dataset 967; the trained model and evaluation logs are available as a temporary Actions artifact (30-day retention). The model artifact is not committed to this repository, so do not assume the public app is currently serving this trained model.
 
