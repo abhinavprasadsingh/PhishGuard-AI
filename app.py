@@ -227,6 +227,27 @@ if submitted:
                     else:
                         st.metric("Model output", str(pred))
                 st.info("Model confidence is not the probability that a URL is safe. A model can be wrong, especially on unfamiliar URLs.")
+                # Show model-level feature importance when the estimator exposes it.
+                estimator = model
+                if hasattr(estimator, "named_steps"):
+                    estimator = estimator.named_steps.get("model", estimator)
+                importance = getattr(estimator, "feature_importances_", None)
+                if importance is None and hasattr(estimator, "coef_"):
+                    try:
+                        importance = abs(estimator.coef_[0])
+                    except (IndexError, TypeError):
+                        importance = None
+                if importance is not None and len(importance) == len(FEATURES):
+                    import pandas as pd
+                    importance_rows = sorted(
+                        [{"Feature": name.replace("_", " ").title(), "Importance": float(value)}
+                         for name, value in zip(FEATURES, importance)],
+                        key=lambda item: item["Importance"], reverse=True
+                    )
+                    with st.expander("🧠 Model-level feature importance"):
+                        st.caption("These values describe the fitted model overall; they do not explain this individual prediction or prove malicious intent.")
+                        st.bar_chart(pd.DataFrame(importance_rows[:8]).set_index("Feature"))
+
             except Exception as exc:
                 st.warning("The saved model could not be used with the expected feature schema. Showing heuristic demo mode instead.")
                 label, score, reasons = heuristic_assessment(features)
