@@ -173,14 +173,14 @@ footer { visibility:hidden; }
 <div class="hero">
   <div class="eyebrow">Threat awareness · URL intelligence</div>
   <h1>PhishShield</h1>
-  <p>Analyze suspicious links with explainable URL features and a machine-learning-ready workflow. Review the signals, understand the limits, and verify the destination independently.</p>
+  <p>Inspect suspicious URLs, understand the warning signs, and make more informed decisions before opening a link. PhishShield analyzes URL text without visiting the destination.</p>
   <span class="pill">◈ Explainable signals</span><span class="pill">⌁ URL stays unvisited</span><span class="pill">✳ Supervised ML pipeline</span>
 </div>
 """, unsafe_allow_html=True)
 
 with st.sidebar:
     st.markdown("## 🛡️ PhishShield")
-    st.caption("INTELLIGENT PHISHING DETECTION")
+    st.caption("URL THREAT ANALYSIS")
     st.markdown("---")
     st.markdown("**What this tool checks**")
     st.write("URL structure, hostname patterns, suspicious words, shortening services, and other simple signals.")
@@ -191,9 +191,9 @@ with st.sidebar:
     st.caption("A low score is not a safety guarantee.")
     st.markdown("---")
     st.markdown("**Project resources**")
-    st.markdown("[GitHub repository](https://github.com/abhinavprasadsingh/PhishGuard-AI)")
-    st.markdown("[Evaluation methodology](https://github.com/abhinavprasadsingh/PhishGuard-AI/blob/main/reports/evaluation.md)")
-    st.markdown("[Viva / technical notes](https://github.com/abhinavprasadsingh/PhishGuard-AI/blob/main/docs/VIVA.md)")
+    st.markdown("[GitHub repository](https://github.com/abhinavprasadsingh/PhishShield)")
+    st.markdown("[Evaluation methodology](https://github.com/abhinavprasadsingh/PhishShield/blob/main/reports/evaluation.md)")
+    st.markdown("[Viva / technical notes](https://github.com/abhinavprasadsingh/PhishShield/blob/main/docs/VIVA.md)")
 
 st.markdown("### 🔍 Inspect a link")
 st.write("Paste a URL to inspect its structure. Do not include private tokens, session IDs, or personal information.")
@@ -263,9 +263,9 @@ if submitted:
             st.markdown("- If in doubt, ask the organization through a separate, trusted channel.")
         with st.expander("ℹ️ Methodology, limitations & project links"):
             st.write("The app parses the URL string locally. It does not request the destination, follow redirects, inspect page content, or verify domain reputation. URL patterns can produce false positives and false negatives.")
-            st.markdown("- [GitHub source code](https://github.com/abhinavprasadsingh/PhishGuard-AI)")
-            st.markdown("- [Model evaluation methodology](https://github.com/abhinavprasadsingh/PhishGuard-AI/blob/main/reports/evaluation.md)")
-            st.markdown("- [Technical notes / viva preparation](https://github.com/abhinavprasadsingh/PhishGuard-AI/blob/main/docs/VIVA.md)")
+            st.markdown("- [GitHub source code](https://github.com/abhinavprasadsingh/PhishShield)")
+            st.markdown("- [Model evaluation methodology](https://github.com/abhinavprasadsingh/PhishShield/blob/main/reports/evaluation.md)")
+            st.markdown("- [Technical notes / viva preparation](https://github.com/abhinavprasadsingh/PhishShield/blob/main/docs/VIVA.md)")
             st.caption("Evaluation metrics are only available after training and testing on a documented labeled dataset. No metrics are claimed by this demo.")
     except ValueError as exc:
         st.error(str(exc))
