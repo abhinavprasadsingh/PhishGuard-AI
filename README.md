@@ -2,7 +2,7 @@
 
 PhishShield is a web application that analyzes URLs for potential phishing indicators and presents clear, explainable risk signals. It helps users assess suspicious links by examining URL structure and hostname patterns, with support for a supervised machine-learning workflow to classify URLs as **potential phishing** or **likely legitimate**.
 
-> **Current project status:** The web app currently supports explainable heuristic demo mode. The repository does not yet include a trained model or a bundled labeled dataset. Supervised ML results and evaluation metrics must only be reported after a dataset is sourced, the model is trained, and evaluation is completed.
+> **Current project status:** The Streamlit app supports explainable heuristic demo mode and can load a trained model from `models/phishing_model.joblib` when that file is present. A supervised training run has completed in GitHub Actions using UCI PhiUSIIL dataset 967; the trained model and evaluation logs are available as a temporary Actions artifact (30-day retention). The model artifact is not committed to this repository, so do not assume the public app is currently serving this trained model.
 
 ## Why this matters
 
@@ -28,9 +28,9 @@ Fake banking links, delivery notifications, login pages, and fraudulent offers c
 - **HTML/CSS** for interface styling
 - **SQLite** is a possible future addition for local scan history; it is not currently required by the core app.
 
-## Dataset plan
+## Dataset and supervised training
 
-Use a properly sourced labeled URL dataset. [PhishTank's developer information](https://phishtank.org/developer_info.php) is one possible source for verified phishing URL data. Pair it with a separately sourced benign URL dataset, and check licensing, provenance, timestamps, class balance, duplicates, and domain overlap before training. Do not assume a source is suitable until its current terms and data format have been reviewed.
+The reproducible workflow uses the [UCI PhiUSIIL Phishing URL dataset (ID 967)](https://archive.ics.uci.edu/dataset/967/phiusiil+phishing+url+dataset). It exports only URL text and labels, maps them to this project’s convention (`0` = legitimate, `1` = phishing), and does not visit destination URLs. Dataset attribution, evaluation methodology, measured results, and limitations are documented in [reports/evaluation.md](reports/evaluation.md).
 
 Prepare a CSV with two columns:
 - `url`: URL text
@@ -65,11 +65,15 @@ A successful GitHub push does not itself confirm that the hosted app has redeplo
 
 ## Train a supervised model (optional)
 
-Once you have a labeled CSV at `data/urls.csv`, run:
+To reproduce training locally, first prepare the UCI dataset:
 
 ```powershell
-python -m src.train --input data/urls.csv
+pip install ucimlrepo
+python scripts/prepare_uci_dataset.py
+python -m src.train --input data/urls.csv --output models/phishing_model.joblib
 ```
+
+The latest successful [GitHub Actions training run](https://github.com/abhinavprasadsingh/PhishShield/actions/runs/38618944295) compares three classifiers and uploads the model plus logs as an artifact. See [measured results and caveats](reports/evaluation.md).
 
 The training script removes exact duplicate URLs, compares Logistic Regression, Random Forest, and HistGradientBoosting, reports evaluation metrics, and saves the selected model to `models/phishing_model.joblib`. Review [the evaluation notes](reports/evaluation.md). Metrics depend on dataset quality, label reliability, and split design; do not claim performance without running and documenting the experiment.
 
