@@ -1,23 +1,48 @@
-# PhishGuard AI 🛡️
+# PhishGuard Pro — Intelligent Phishing Detection 🛡️
 
-An educational URL-risk analysis web app built with Python, Streamlit, pandas, and scikit-learn. It explains URL patterns that may deserve caution and never opens or visits the submitted URL.
+PhishGuard Pro is an educational phishing-detection project that analyzes URL structure and explains warning signals. The goal is to classify labeled URLs as **potential phishing** or **likely legitimate** using a supervised machine-learning model, while keeping the analysis transparent.
+
+> **Current project status:** The web app currently supports explainable heuristic demo mode. The repository does not yet include a trained model or a bundled labeled dataset. Supervised ML results and evaluation metrics must only be reported after a dataset is sourced, the model is trained, and evaluation is completed.
+
+## Why this matters
+
+Fake banking links, delivery notifications, login pages, and fraudulent offers can be designed to steal credentials. PhishGuard Pro helps users inspect suspicious URL patterns before deciding what to do next. It is an educational aid, not a replacement for browser protection or security review.
 
 ## Features
 
-- Dark cyber-inspired Streamlit interface
-- URL validation and shared feature extraction
-- Explainable heuristic demo mode when no trained model is present
-- Optional supervised scikit-learn model loaded from models/phishing_model.joblib
-- Feature display, automated tests, and GitHub Actions checks
-- Dataset and model provenance guidance
+- Premium dark Streamlit interface
+- URL parsing and feature extraction without visiting the submitted URL
+- Explainable heuristic demo mode when no trained model is available
+- Optional scikit-learn model loaded from `models/phishing_model.joblib`
+- Shows extracted features and human-readable warning signals
+- Training pipeline compares Logistic Regression, Random Forest, and HistGradientBoosting
+- Evaluation reporting for accuracy, precision, recall, F1, average precision (PR-AUC), and a confusion matrix
+- Automated tests and GitHub Actions checks
 
-> **Important:** This is an educational tool, not a browser protection product. A low score does not prove a URL is safe. HTTPS is not proof of legitimacy. Do not enter credentials after following an unexpected link.
+## Tech stack
+
+- **Python** for application and analysis
+- **Pandas** for tabular feature inputs and dataset handling
+- **scikit-learn** for supervised classification and evaluation
+- **Streamlit** for the interactive web demo
+- **HTML/CSS** for interface styling
+- **SQLite** is a possible future addition for local scan history; it is not currently required by the core app.
+
+## Dataset plan
+
+Use a properly sourced labeled URL dataset. [PhishTank's developer information](https://phishtank.org/developer_info.php) is one possible source for verified phishing URL data. Pair it with a separately sourced benign URL dataset, and check licensing, provenance, timestamps, class balance, duplicates, and domain overlap before training. Do not assume a source is suitable until its current terms and data format have been reviewed.
+
+Prepare a CSV with two columns:
+- `url`: URL text
+- `label`: `1` for phishing, `0` for legitimate
+
+Keep raw data out of Git (for example, `data/urls.csv`) and never open URLs from the dataset. Avoid training/test leakage by separating related domains where feasible and documenting the split.
 
 ## Run locally (Windows PowerShell)
 
-1. Install Python 3.11 or newer from https://www.python.org/downloads/ and ensure Python is on PATH.
+1. Install Python 3.11 or newer from https://www.python.org/downloads/.
 2. Open PowerShell in the project folder.
-3. Create and activate an environment:
+3. Create an environment, install dependencies, and launch Streamlit:
 
 ```powershell
 py -3.11 -m venv .venv
@@ -33,32 +58,42 @@ Streamlit prints a local address, usually http://localhost:8501.
 
 1. Push this repository to GitHub.
 2. Open https://share.streamlit.io/ and sign in with GitHub.
-3. Choose **Create app**, select abhinavprasadsingh/PhishGuard-AI, branch main, and main file path app.py.
-4. Deploy. The platform installs packages from requirements.txt.
-5. After deployment, open the generated app URL and test valid and invalid inputs.
+3. Create an app using repository `abhinavprasadsingh/PhishGuard-AI`, branch `main`, and main file `app.py`.
+4. Deploy and test valid and invalid inputs.
 
-A successful GitHub push does not itself mean the Streamlit app is deployed. Hosting account authorization and deployment status must be checked on Streamlit Community Cloud.
+A successful GitHub push does not itself confirm that the hosted app has redeployed successfully. Check the deployment status in Streamlit Community Cloud.
 
-## Run tests
+## Train a supervised model (optional)
+
+Once you have a labeled CSV at `data/urls.csv`, run:
+
+```powershell
+python -m src.train --input data/urls.csv
+```
+
+The training script removes exact duplicate URLs, compares Logistic Regression, Random Forest, and HistGradientBoosting, reports evaluation metrics, and saves the selected model to `models/phishing_model.joblib`. Review [the evaluation notes](reports/evaluation.md). Metrics depend on dataset quality, label reliability, and split design; do not claim performance without running and documenting the experiment.
+
+## Tests
 
 ```powershell
 python -m compileall -q app.py src tests
 pytest -q
 ```
 
-GitHub Actions runs the same checks for pushes and pull requests.
+GitHub Actions runs these checks on pushes and pull requests.
 
-## Train a supervised model (optional)
+## Viva explanation
 
-No dataset or trained model is included. Do not invent metrics or treat the heuristic demo score as ML confidence.
+“The system extracts measurable features from a URL and can use a classifier trained on labeled phishing and legitimate examples to estimate its class. It also shows understandable warning signals so users can inspect why a URL deserves caution. A prediction is not a guarantee of safety.”
 
-Get a reputable labeled URL dataset and check its license and provenance. Prepare a CSV with columns: url (URL text) and label (1 for phishing, 0 for legitimate). Keep the data file outside Git, for example data/urls.csv, then run:
+## Limitations and safe use
 
-```powershell
-python -m src.train --input data/urls.csv
-```
-
-The script removes exact duplicate URLs, compares Logistic Regression, Random Forest, and HistGradientBoosting, reports accuracy, precision, recall, F1, average precision (PR-AUC), and a confusion matrix, then saves the selected model to models/phishing_model.joblib. It attempts an approximate domain-group split when enough groups are present; this is not a full Public Suffix List implementation. Review [the evaluation notes](reports/evaluation.md). Metrics depend on dataset quality and split design; use an independently sourced, domain-separated test set before making strong performance claims. Never open URLs from the dataset.
+- Heuristic demo scores are **not** machine-learning predictions or calibrated probabilities.
+- URL features alone can miss sophisticated phishing and can flag legitimate URLs.
+- HTTPS does not prove that a website is legitimate.
+- A low-risk result is not a safety guarantee.
+- The app parses the submitted URL as text; it does not visit it, follow redirects, or fetch page content.
+- Avoid submitting URLs that contain private access tokens, session IDs, or personal data.
 
 ## Project structure
 
@@ -67,12 +102,9 @@ PhishGuard-AI/
 ├── app.py
 ├── requirements.txt
 ├── src/
-│   ├── __init__.py
 │   ├── features.py
 │   └── train.py
 ├── tests/
-│   ├── __init__.py
-│   └── test_features.py
 ├── data/README.md
 ├── models/README.md
 ├── reports/evaluation.md
@@ -80,10 +112,6 @@ PhishGuard-AI/
 └── .github/workflows/tests.yml
 ```
 
-## Privacy and safety
-
-The app parses URL strings locally and does not request submitted destinations. Avoid pasting URLs containing private access tokens or personal data. This project is not a substitute for a reputable security product or human verification.
-
 ## License
 
-MIT. See LICENSE.
+MIT. See [LICENSE](LICENSE).
