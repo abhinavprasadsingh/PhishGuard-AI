@@ -143,6 +143,11 @@ with st.sidebar:
     st.write("The submitted URL is parsed as text. This app does not visit it, follow redirects, or fetch webpage content.")
     st.markdown("---")
     st.caption("A low score is not a safety guarantee.")
+    st.markdown("---")
+    st.markdown("**Project resources**")
+    st.markdown("[GitHub repository](https://github.com/abhinavprasadsingh/PhishGuard-AI)")
+    st.markdown("[Evaluation methodology](https://github.com/abhinavprasadsingh/PhishGuard-AI/blob/main/reports/evaluation.md)")
+    st.markdown("[Viva / technical notes](https://github.com/abhinavprasadsingh/PhishGuard-AI/blob/main/docs/VIVA.md)")
 
 st.markdown("### 🔍 Inspect a link")
 st.write("Paste a URL to inspect its structure. Do not include private tokens, session IDs, or personal information.")
@@ -196,13 +201,29 @@ if submitted:
         with st.expander("🧬 Explore extracted URL features", expanded=True):
             rows = [{"Feature": key.replace("_", " ").title(), "Value": str(value)} for key, value in features.items()]
             st.dataframe(rows, hide_index=True, use_container_width=True)
+        # Keep transparent rule-based indicators separate from any trained-model output.
+        _, rule_score, rule_reasons = heuristic_assessment(features)
+        with st.expander("🧭 URL warning signals to review", expanded=True):
+            if rule_reasons and rule_reasons != ["No simple warning patterns were detected. This does not prove the site is safe."]:
+                for reason in rule_reasons:
+                    st.markdown(f"- {reason}")
+            else:
+                st.write("No simple warning patterns were detected. This does not prove the URL is safe.")
+            st.caption(f"Rule-based indicator score: {rule_score}/100. This is not a probability and is not the trained model's explanation.")
+        with st.expander("🧬 Explore extracted URL features"):
+            rows = [{"Feature": key.replace("_", " ").title(), "Value": str(value)} for key, value in features.items()]
+            st.dataframe(rows, hide_index=True, use_container_width=True)
         with st.expander("🧭 Safe next steps"):
             st.markdown("- Check the registered domain carefully, not just the brand name in the URL.")
             st.markdown("- Reach important services through a bookmark or by typing their known address yourself.")
             st.markdown("- Never enter passwords or one-time codes after following an unexpected message link.")
             st.markdown("- If in doubt, ask the organization through a separate, trusted channel.")
-        with st.expander("ℹ️ How this assessment works"):
+        with st.expander("ℹ️ Methodology, limitations & project links"):
             st.write("The app parses the URL string locally. It does not request the destination, follow redirects, inspect page content, or verify domain reputation. URL patterns can produce false positives and false negatives.")
+            st.markdown("- [GitHub source code](https://github.com/abhinavprasadsingh/PhishGuard-AI)")
+            st.markdown("- [Model evaluation methodology](https://github.com/abhinavprasadsingh/PhishGuard-AI/blob/main/reports/evaluation.md)")
+            st.markdown("- [Technical notes / viva preparation](https://github.com/abhinavprasadsingh/PhishGuard-AI/blob/main/docs/VIVA.md)")
+            st.caption("Evaluation metrics are only available after training and testing on a documented labeled dataset. No metrics are claimed by this demo.")
     except ValueError as exc:
         st.error(str(exc))
 else:
