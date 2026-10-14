@@ -52,3 +52,26 @@ def test_dataset_validation_and_duplicate_removal(tmp_path):
     assert len(X) == len(y) == len(urls) == 60
     assert y.nunique() == 2
     assert skipped == 0
+
+
+
+@pytest.mark.parametrize("url", [
+    "https://example.com:99999/path",
+    "https://user:password@example.com/",
+    "ftp://example.com/file",
+    "https://bad host.example/path",
+    "https://-badlabel.example/",
+])
+def test_rejects_unsafe_or_malformed_urls(url):
+    with pytest.raises(ValueError):
+        normalize_url(url)
+
+
+def test_rejects_overlong_url():
+    with pytest.raises(ValueError, match="too long"):
+        normalize_url("https://example.com/" + "a" * 2050)
+
+
+def test_accepts_valid_url_with_query():
+    normalized = normalize_url("https://example.com/search?q=hello")
+    assert normalized == "https://example.com/search?q=hello"
