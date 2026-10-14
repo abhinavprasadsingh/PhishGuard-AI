@@ -6,6 +6,25 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import streamlit as st
+import streamlit.components.v1 as components
+
+# Google Analytics 4: this component sends a page-view from its own iframe.
+# Verify events in GA4 Realtime after deployment; Streamlit does not expose a
+# supported hook for inserting scripts into the top-level document <head>.
+GA_MEASUREMENT_ID = "G-6L7WQYZ1LK"
+components.html(
+    f"""
+    <script async src="https://www.googletagmanager.com/gtag/js?id={GA_MEASUREMENT_ID}"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {{ dataLayer.push(arguments); }}
+      gtag('js', new Date());
+      gtag('config', '{GA_MEASUREMENT_ID}', {{ send_page_view: true }});
+    </script>
+    """,
+    height=0,
+    width=0,
+)
 
 ROOT = Path(__file__).resolve().parent
 MODEL_PATH = ROOT / "models" / "phishing_model.joblib"
