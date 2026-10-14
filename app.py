@@ -20,26 +20,46 @@ SUSPICIOUS = {"login", "verify", "account", "update", "secure", "password", "ban
 
 
 def normalize_url(raw: str) -> str:
+    """Validate a URL as text only; never make a network request."""
     value = raw.strip()
     if not value:
         raise ValueError("Enter a URL first.")
-    if any(ord(ch) < 32 for ch in value):
+    if len(value) > 2048:
+        raise ValueError("The URL is too long (maximum 2,048 characters).")
+    if any(ord(ch) < 32 or ord(ch) == 127 for ch in value):
         raise ValueError("The URL contains invalid control characters.")
-    if not re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*://", value):
-        value = "https://" + value
-    parsed = urlparse(value)
-    if parsed.scheme.lower() not in {"http", "https"}:
-        raise ValueError("Only http:// and https:// URLs can be checked.")
-    if not parsed.hostname or "." not in parsed.hostname:
-        raise ValueError("Enter a complete domain name, such as example.com.")
-    try:
-        parsed.port
-    except ValueError as exc:
-        raise ValueError("The URL contains an invalid port.") from exc
     if any(ch.isspace() for ch in value):
         raise ValueError("The URL contains spaces. Check the address and try again.")
+    if not re.match(r"^[a-zA-Z][a-zA-Z0-9+.-]*://", value):
+        value = "https://" + value
+    try:
+        parsed = urlparse(value)
+        if parsed.scheme.lower() not in {"http", "https"}:
+            raise ValueError("Only http:// and https:// URLs can be checked.")
+        if not parsed.hostname:
+            raise ValueError("Enter a complete domain name, such as example.com.")
+        if parsed.username is not None or parsed.password is not None:
+            raise ValueError("URLs containing embedded usernames or passwords are not accepted.")
+        host = parsed.hostname.rstrip(".")
+        if not host or "." not in host:
+            raise ValueError("Enter a complete domain name, such as example.com.")
+        # Accessing .port validates malformed and out-of-range ports.
+        port = parsed.port
+        if port is not None and not (1 <= port <= 65535):
+            raise ValueError("The URL contains an invalid port.")
+        # Reject malformed host labels while allowing valid internationalized domains.
+        ascii_host = host.encode("idna").decode("ascii")
+        if len(ascii_host) > 253:
+            raise ValueError("The hostname is too long.")
+        labels = ascii_host.split(".")
+        if any(not label or len(label) > 63 or label.startswith("-") or label.endswith("-")
+               or not re.fullmatch(r"[A-Za-z0-9-]+", label) for label in labels):
+            raise ValueError("The hostname format is invalid.")
+    except (UnicodeError, ValueError) as exc:
+        if isinstance(exc, ValueError) and str(exc).startswith(("Enter ", "Only ", "URLs ", "The URL", "The hostname")):
+            raise
+        raise ValueError("The URL format is invalid. Check the hostname and port.") from exc
     return value
-
 
 def extract_features(raw: str) -> dict[str, int]:
     url = normalize_url(raw)
