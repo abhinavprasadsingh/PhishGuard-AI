@@ -6,7 +6,7 @@ PhishShield is a web application that analyzes URLs for potential phishing indic
 
 ## Why this matters
 
-Fake banking links, delivery notifications, login pages, and fraudulent offers can be designed to steal credentials. PhishShield helps users inspect suspicious URL patterns before deciding what to do next. It is an educational aid, not a replacement for browser protection or security review.
+Fake banking links, delivery notifications, login pages, and fraudulent offers can be designed to steal credentials. PhishShield helps users inspect suspicious URL patterns before deciding what to do next. It is a decision-support tool, not a replacement for browser protection or a professional security review.
 
 ## Features
 
@@ -58,7 +58,7 @@ Streamlit prints a local address, usually http://localhost:8501.
 
 1. Push this repository to GitHub.
 2. Open https://share.streamlit.io/ and sign in with GitHub.
-3. Create an app using repository `abhinavprasadsingh/PhishGuard-AI`, branch `main`, and main file `app.py`.
+3. Create an app using repository `abhinavprasadsingh/PhishShield`, branch `main`, and main file `app.py`.
 4. Deploy and test valid and invalid inputs.
 
 A successful GitHub push does not itself confirm that the hosted app has redeployed successfully. Check the deployment status in Streamlit Community Cloud.
