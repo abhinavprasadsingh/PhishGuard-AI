@@ -115,6 +115,11 @@ html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
 .stApp { background: radial-gradient(ellipse at 12% -8%,rgba(26,108,133,.25),transparent 38%),radial-gradient(ellipse at 100% 30%,rgba(39,73,142,.16),transparent 34%),#070b12; color:#eaf1fb; }
 .block-container { max-width:1260px; padding:1.25rem 1.6rem 3.5rem; }
 [data-testid="stHeader"] { background:rgba(7,11,18,.72); }
+/* Keep the hosted app chrome minimal; hide Streamlit's built-in header controls. */
+[data-testid="stHeader"] { display: none; }
+[data-testid="stToolbar"] { display: none !important; }
+[data-testid="stDecoration"] { display: none !important; }
+
 [data-testid="stSidebar"] { background:linear-gradient(180deg,#0c1725,#080e17); border-right:1px solid #1c3042; }
 [data-testid="stSidebar"] > div { padding-top:1.5rem; }
 .hero { position:relative; isolation:isolate; overflow:hidden; padding:clamp(1.7rem,4vw,3.4rem); border:1px solid rgba(103,235,215,.24); border-radius:30px; background:linear-gradient(112deg,rgba(15,43,61,.98),rgba(10,20,34,.98) 60%,rgba(13,31,49,.97)); margin:.25rem 0 1.8rem; box-shadow:0 28px 80px rgba(0,0,0,.27); }
