@@ -1,9 +1,5 @@
-# Dataset instructions
+# Dataset
 
-No dataset is bundled or fabricated. To train a supervised model, obtain a labeled URL dataset from a reputable source and confirm its license, provenance, and permitted use.
-
-Prepare a CSV with:
-- `url`: the URL string
-- `label`: 1 for phishing and 0 for legitimate
-
-Keep downloaded datasets out of Git. Review duplicates and class balance, split data before model selection, and avoid putting the same domain or near-duplicate URL in both train and test where possible. Never fetch or open the URLs in the dataset.
+Training data is not committed to this repository.
+Run `python scripts/prepare_uci_dataset.py` to download UCI PhiUSIIL dataset 967 and create `data/urls.csv` with `url,label` (`0=legitimate`, `1=phishing`). See `../reports/evaluation.md` for attribution and methodology.
+The script reads records only and never visits destination URLs. Treat the data as untrusted and do not commit the generated CSV.
