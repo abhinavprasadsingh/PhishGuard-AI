@@ -1,21 +1,21 @@
-# Model evaluation notes
+# Model evaluation methodology
 
-PhishGuard's training command compares Logistic Regression, Random Forest, and HistGradientBoosting on a held-out set. The positive class is phishing (label 1). It reports accuracy, precision, recall, F1, average precision (PR-AUC), and a confusion matrix.
-
-## Important evaluation caveats
-
-- Remove exact duplicate URLs before splitting; the training script does this.
-- It attempts an approximate grouping split by the final two hostname labels to reduce domain leakage. This is **not** a full Public Suffix List implementation and may group some domains incorrectly (for example, domains under multi-part public suffixes). Treat it as a basic safeguard, not a rigorous benchmark.
-- If there are too few distinct groups, the script falls back to a stratified row split and prints that fact.
-- Use an independently sourced, domain-separated test set for stronger claims.
-- Do not report a score from a single split as proof of production performance.
-- Never open URLs from a dataset during preprocessing or evaluation.
-
-## Dataset expectations
-
-Provide a CSV with columns:
-
-- `url`: URL string
-- `label`: `1` for phishing, `0` for legitimate
-
-Verify the source, license, label meaning, collection date, class balance, and any duplicates before training. Keep datasets and generated model artifacts out of Git unless their licenses and repository size make inclusion appropriate.
+## Status
+No measured metrics are committed yet. The supervised workflow downloads UCI PhiUSIIL dataset 967, exports URL text and labels, evaluates this project's URL-only features, and uploads model and run output as an Actions artifact. Dataset and model are not committed.
+## Dataset provenance
+- Dataset: PhiUSIIL Phishing URL (Website), UCI dataset 967.
+- Citation: Prasad, A. & Chandra, S. (2024), Computers & Security.
+- DOI: https://doi.org/10.1016/j.cose.2023.103545
+- Source: https://archive.ics.uci.edu/dataset/967/phiusiil+phishing+url+dataset
+- UCI lists CC BY 4.0; retain attribution and verify current terms before redistribution.
+- UCI labels are mapped to project convention: 0=legitimate, 1=phishing. Only URL text features are used; webpage-derived columns are excluded.
+## Reproduce on Windows
+```powershell
+pip install -r requirements.txt
+pip install ucimlrepo
+python scripts/prepare_uci_dataset.py
+python -m src.train --input data/urls.csv --output models/phishing_model.joblib
+```
+## Interpretation
+The script compares Logistic Regression, Random Forest, and HistGradientBoosting and reports accuracy, precision, recall, F1, average precision (PR-AUC), confusion matrix, and per-class metrics. Model selection uses held-out F1, so these metrics are model-selection estimates, not a final untouched benchmark. Domain grouping is approximate; stronger evaluation should use time-based splits and registrable-domain grouping.
+Do not invent metrics. Use output from a successful run and document row counts, split method, and exact metrics. One dataset cannot guarantee future phishing detection.
