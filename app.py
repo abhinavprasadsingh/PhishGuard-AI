@@ -126,7 +126,7 @@ def load_model():
         return None
 
 
-st.set_page_config(page_title="PhishGuard Pro | Intelligent Phishing Detection", page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="PhishShield | Intelligent Phishing Detection", page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
@@ -179,7 +179,7 @@ footer { visibility:hidden; }
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown("## 🛡️ PhishGuard Pro")
+    st.markdown("## 🛡️ PhishShield")
     st.caption("INTELLIGENT PHISHING DETECTION")
     st.markdown("---")
     st.markdown("**What this tool checks**")
@@ -286,4 +286,4 @@ else:
         st.markdown('<div class="panel"><h4>🔐 Privacy-minded</h4><p class="muted">The app analyzes text only and never opens the destination URL.</p></div>', unsafe_allow_html=True)
 
 st.markdown("---")
-st.markdown('<p class="muted">PhishGuard AI is an educational awareness project, not a guarantee of safety or a replacement for browser protection and professional security tools.</p>', unsafe_allow_html=True)
+st.markdown('<p class="muted">PhishShield is an educational awareness project, not a guarantee of safety or a replacement for browser protection and professional security tools.</p>', unsafe_allow_html=True)
