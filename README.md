@@ -58,7 +58,7 @@ Get a reputable labeled URL dataset and check its license and provenance. Prepar
 python -m src.train --input data/urls.csv
 ```
 
-The script prints accuracy, precision, recall, F1, and a confusion matrix, then saves the model to models/phishing_model.joblib. Metrics describe the held-out split of the supplied dataset; duplicates or related domains across splits can cause leakage. For serious evaluation, split by domain and use an independently sourced test set. Never open URLs from the dataset.
+The script removes exact duplicate URLs, compares Logistic Regression, Random Forest, and HistGradientBoosting, reports accuracy, precision, recall, F1, average precision (PR-AUC), and a confusion matrix, then saves the selected model to models/phishing_model.joblib. It attempts an approximate domain-group split when enough groups are present; this is not a full Public Suffix List implementation. Review [the evaluation notes](reports/evaluation.md). Metrics depend on dataset quality and split design; use an independently sourced, domain-separated test set before making strong performance claims. Never open URLs from the dataset.
 
 ## Project structure
 
@@ -75,6 +75,7 @@ PhishGuard-AI/
 │   └── test_features.py
 ├── data/README.md
 ├── models/README.md
+├── reports/evaluation.md
 ├── docs/VIVA.md
 └── .github/workflows/tests.yml
 ```
