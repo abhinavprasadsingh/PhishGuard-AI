@@ -1,12 +1,12 @@
-# PhishGuard Pro — Intelligent Phishing Detection 🛡️
+# PhishShield — Intelligent Phishing Detection 🛡️
 
-PhishGuard Pro is an educational phishing-detection project that analyzes URL structure and explains warning signals. The goal is to classify labeled URLs as **potential phishing** or **likely legitimate** using a supervised machine-learning model, while keeping the analysis transparent.
+PhishShield is an educational phishing-detection project that analyzes URL structure and explains warning signals. The goal is to classify labeled URLs as **potential phishing** or **likely legitimate** using a supervised machine-learning model, while keeping the analysis transparent.
 
 > **Current project status:** The web app currently supports explainable heuristic demo mode. The repository does not yet include a trained model or a bundled labeled dataset. Supervised ML results and evaluation metrics must only be reported after a dataset is sourced, the model is trained, and evaluation is completed.
 
 ## Why this matters
 
-Fake banking links, delivery notifications, login pages, and fraudulent offers can be designed to steal credentials. PhishGuard Pro helps users inspect suspicious URL patterns before deciding what to do next. It is an educational aid, not a replacement for browser protection or security review.
+Fake banking links, delivery notifications, login pages, and fraudulent offers can be designed to steal credentials. PhishShield helps users inspect suspicious URL patterns before deciding what to do next. It is an educational aid, not a replacement for browser protection or security review.
 
 ## Features
 
