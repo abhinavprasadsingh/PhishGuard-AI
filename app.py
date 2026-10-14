@@ -106,7 +106,7 @@ def load_model():
         return None
 
 
-st.set_page_config(page_title="PhishGuard AI | URL Risk Lab", page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="PhishGuard Pro | Intelligent Phishing Detection", page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
@@ -147,15 +147,15 @@ footer { visibility:hidden; }
 </style>
 <div class="hero">
   <div class="eyebrow">Threat awareness · URL intelligence</div>
-  <h1>PhishGuard <span style="color:#75ecd9">AI</span></h1>
-  <p>Trust the signal. Verify the source. Inspect suspicious links with transparent URL-pattern analysis designed with privacy in mind.</p>
-  <span class="pill">◈ Explainable signals</span><span class="pill">⌁ URL stays unvisited</span><span class="pill">✳ ML-ready workflow</span>
+  <h1>PhishGuard <span style="color:#75ecd9">Pro</span></h1>
+  <p>Analyze suspicious links with explainable URL features and a machine-learning-ready workflow. Review the signals, understand the limits, and verify the destination independently.</p>
+  <span class="pill">◈ Explainable signals</span><span class="pill">⌁ URL stays unvisited</span><span class="pill">✳ Supervised ML pipeline</span>
 </div>
 """, unsafe_allow_html=True)
 
 with st.sidebar:
-    st.markdown("## 🛡️ PhishGuard")
-    st.caption("YOUR POCKET URL RISK LAB")
+    st.markdown("## 🛡️ PhishGuard Pro")
+    st.caption("INTELLIGENT PHISHING DETECTION")
     st.markdown("---")
     st.markdown("**What this tool checks**")
     st.write("URL structure, hostname patterns, suspicious words, shortening services, and other simple signals.")
