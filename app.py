@@ -172,7 +172,7 @@ footer { visibility:hidden; }
 </style>
 <div class="hero">
   <div class="eyebrow">Threat awareness · URL intelligence</div>
-  <h1>PhishGuard <span style="color:#75ecd9">Pro</span></h1>
+  <h1>PhishShield</h1>
   <p>Analyze suspicious links with explainable URL features and a machine-learning-ready workflow. Review the signals, understand the limits, and verify the destination independently.</p>
   <span class="pill">◈ Explainable signals</span><span class="pill">⌁ URL stays unvisited</span><span class="pill">✳ Supervised ML pipeline</span>
 </div>
