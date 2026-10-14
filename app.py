@@ -109,26 +109,61 @@ def load_model():
 st.set_page_config(page_title="PhishGuard AI | URL Risk Lab", page_icon="🛡️", layout="wide", initial_sidebar_state="expanded")
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 :root { color-scheme: dark; }
-.stApp { background: radial-gradient(ellipse at 12% 0%, #122b45 0, #080f1c 45%, #070b13 100%); color: #e8eef8; }
-.block-container { max-width: 1180px; padding-top: 1.6rem; padding-bottom: 3rem; }
-.hero { padding: 2rem 2.1rem; border: 1px solid #24435c; border-radius: 24px; background: linear-gradient(120deg, rgba(19,49,73,.96), rgba(12,21,37,.96)); margin-bottom: 1.4rem; box-shadow: 0 16px 45px rgba(0,0,0,.18); }
-.eyebrow { color: #69e6cf; letter-spacing: .18em; text-transform: uppercase; font-size: .74rem; font-weight: 800; }
-.hero h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); line-height: 1.08; margin: .55rem 0; color: #f3f7ff; }
-.hero p { color: #b6c6da; font-size: 1.08rem; max-width: 760px; }
-.pill { display:inline-block; padding:.35rem .7rem; border:1px solid #2c526b; border-radius:999px; color:#b6c6da; font-size:.78rem; margin-right:.35rem; }
-.panel { padding: 1.1rem 1.2rem; border-radius: 16px; background: rgba(16,29,47,.8); border: 1px solid #20364d; height:100%; }
-.muted { color: #91a5bd; font-size: .9rem; }
-div[data-testid="stMetric"] { background: rgba(17,34,54,.78); border: 1px solid #24415a; padding: 1rem; border-radius: 14px; }
-.stButton button[kind="primary"], .stFormSubmitButton button { border-radius: 11px; font-weight: 750; min-height: 2.8rem; }
-div[data-testid="stDataFrame"] { border: 1px solid #20364d; border-radius: 12px; overflow:hidden; }
+html, body, [class*="css"] { font-family: 'DM Sans', sans-serif; }
+.stApp {
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(25, 91, 115, .28), transparent 34%),
+    radial-gradient(ellipse at 95% 20%, rgba(31, 77, 124, .18), transparent 30%),
+    #070c14;
+  color: #e9f1fb;
+}
+.block-container { max-width: 1220px; padding-top: 1.15rem; padding-bottom: 3.5rem; }
+[data-testid="stHeader"] { background: rgba(7,12,20,.78); }
+[data-testid="stSidebar"] { background: linear-gradient(180deg,#0d1827 0%,#0a111c 100%); border-right: 1px solid #1d3043; }
+[data-testid="stSidebar"] > div { padding-top: 1.4rem; }
+.hero {
+  position: relative; overflow: hidden; padding: clamp(1.5rem,4vw,3.1rem);
+  border: 1px solid rgba(83, 224, 204, .24); border-radius: 28px;
+  background: linear-gradient(120deg,rgba(18,47,67,.98),rgba(11,21,37,.98) 62%,rgba(12,29,48,.96));
+  margin: .3rem 0 1.8rem; box-shadow: 0 22px 65px rgba(0,0,0,.22);
+}
+.hero:after { content:""; position:absolute; width:260px; height:260px; right:-85px; top:-105px; border:1px solid rgba(105,230,207,.13); border-radius:50%; box-shadow:0 0 0 30px rgba(105,230,207,.025),0 0 0 65px rgba(105,230,207,.02); pointer-events:none; }
+.eyebrow { color:#72ead6; letter-spacing:.19em; text-transform:uppercase; font-size:.72rem; font-weight:800; }
+.hero h1 { font-family:'Space Grotesk',sans-serif; font-size:clamp(2.4rem,5.5vw,4.2rem); line-height:1.03; letter-spacing:-.045em; margin:.8rem 0 .9rem; color:#f3f7ff; }
+.hero p { color:#bdcddd; font-size:1.05rem; line-height:1.75; max-width:760px; }
+.pill { display:inline-flex; align-items:center; padding:.42rem .75rem; border:1px solid #31566b; border-radius:999px; color:#d0e3ed; font-size:.76rem; margin:.4rem .35rem 0 0; background:rgba(8,20,33,.35); }
+.panel { padding:1.25rem 1.3rem; border-radius:18px; background:linear-gradient(145deg,rgba(17,33,52,.94),rgba(12,23,37,.92)); border:1px solid #23394e; height:100%; box-shadow:0 10px 28px rgba(0,0,0,.10); }
+.muted, [data-testid="stCaptionContainer"] { color:#9aafc5; font-size:.9rem; }
+h1,h2,h3,h4 { font-family:'Space Grotesk',sans-serif !important; letter-spacing:-.025em; }
+h2, h3 { color:#f0f6ff; }
+p { line-height:1.65; }
+div[data-testid="stMetric"] { background:linear-gradient(145deg,rgba(19,39,60,.95),rgba(12,25,41,.95)); border:1px solid #2b475e; padding:1rem 1.1rem; border-radius:16px; }
+div[data-testid="stMetricLabel"] { color:#a8bfd2; }
+div[data-testid="stMetricValue"] { color:#75ead6; font-family:'Space Grotesk',sans-serif; }
+.stTextInput input { background:#0c1726 !important; border:1px solid #2c435a !important; border-radius:12px !important; min-height:3.15rem; color:#f2f7ff !important; }
+.stTextInput input:focus { border-color:#69e6cf !important; box-shadow:0 0 0 1px #69e6cf !important; }
+.stButton button, .stFormSubmitButton button { border-radius:12px; font-weight:700; min-height:2.9rem; transition:all .18s ease; }
+.stButton button[kind="primary"], .stFormSubmitButton button[kind="primary"] { background:linear-gradient(100deg,#58ddc8,#8af0d9); color:#07151d; border:0; }
+.stButton button[kind="primary"]:hover, .stFormSubmitButton button[kind="primary"]:hover { filter:brightness(1.06); box-shadow:0 7px 24px rgba(87,221,200,.18); }
+div[data-testid="stExpander"] { border:1px solid #22394e; border-radius:14px; background:rgba(11,22,36,.55); overflow:hidden; }
+div[data-testid="stDataFrame"] { border:1px solid #20364d; border-radius:12px; overflow:hidden; }
+hr { border-color:#213449; }
+a { color:#77e9d7 !important; }
 footer {visibility:hidden;}
+@media (max-width: 700px) {
+  .block-container { padding: .7rem .85rem 2.5rem; }
+  .hero { border-radius:20px; padding:1.4rem; }
+  .hero p { font-size:.98rem; }
+  .pill { font-size:.7rem; }
+}
 </style>
 <div class="hero">
   <div class="eyebrow">Threat awareness · URL intelligence</div>
   <h1>PhishGuard <span style="color:#69e6cf">AI</span></h1>
-  <p>Pause before you click. Explore suspicious URL patterns with a transparent, privacy-minded risk assessment built for security awareness.</p>
-  <span class="pill">🔎 Explainable signals</span><span class="pill">🔐 No URL visits</span><span class="pill">🧪 ML-ready</span>
+  <p>Pause before you click. Understand the signals behind a suspicious link with a transparent, privacy-minded URL risk assessment.</p>
+  <span class="pill">⌕ Explainable signals</span><span class="pill">⌁ No URL visits</span><span class="pill">✳ ML-ready</span>
 </div>
 """, unsafe_allow_html=True)
 
@@ -198,9 +233,6 @@ if submitted:
                 st.metric("Heuristic signal score", f"{score}/100", help="A rule-based indicator only; not a calibrated probability.")
                 st.progress(score / 100)
                 st.caption("Higher means more listed patterns matched, not a measured probability of fraud.")
-        with st.expander("🧬 Explore extracted URL features", expanded=True):
-            rows = [{"Feature": key.replace("_", " ").title(), "Value": str(value)} for key, value in features.items()]
-            st.dataframe(rows, hide_index=True, use_container_width=True)
         # Keep transparent rule-based indicators separate from any trained-model output.
         _, rule_score, rule_reasons = heuristic_assessment(features)
         with st.expander("🧭 URL warning signals to review", expanded=True):
