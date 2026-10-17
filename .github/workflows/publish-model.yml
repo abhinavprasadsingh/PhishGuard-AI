@@ -16,7 +16,7 @@ permissions:
   actions: read
 
 concurrency:
-  group: publish-phishing-model
+  group: publish-phishing-model-recovery
   cancel-in-progress: true
 
 jobs:
