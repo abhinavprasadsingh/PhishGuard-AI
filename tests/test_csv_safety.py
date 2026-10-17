@@ -12,6 +12,11 @@ from src.csv_safety import sanitize_csv_for_spreadsheet
     "  =1+1",
     "\t=1+1",
     "\r@SUM(A1:A2)",
+    "\tplain text",
+    "＝1+1",
+    "＋SUM(A1:A2)",
+    "－1+2",
+    "＠SUM(A1:A2)",
 ])
 def test_formula_like_text_is_prefixed(value):
     frame = pd.DataFrame({"Input URL": [value]})
