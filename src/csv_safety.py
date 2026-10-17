@@ -2,8 +2,7 @@
 
 import pandas as pd
 
-
-_FORMULA_PREFIXES = ("=", "+", "-", "@")
+_FORMULA_PREFIXES = ("=", "+", "-", "@", "＝", "＋", "－", "＠")
 
 
 def sanitize_csv_for_spreadsheet(dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -17,9 +16,10 @@ def sanitize_csv_for_spreadsheet(dataframe: pd.DataFrame) -> pd.DataFrame:
     def sanitize(value):
         if not isinstance(value, str):
             return value
-        # Ignore leading whitespace/control characters when checking for a
-        # formula prefix, but preserve the original text after the apostrophe.
-        if value.lstrip(" \t\r\n").startswith(_FORMULA_PREFIXES):
+        stripped = value.lstrip(" \t\r\n")
+        # Some spreadsheet importers treat leading control characters as risky.
+        # Full-width formula prefixes matter in some locales too.
+        if value.startswith(("\t", "\r", "\n")) or stripped.startswith(_FORMULA_PREFIXES):
             return "'" + value
         return value
 
