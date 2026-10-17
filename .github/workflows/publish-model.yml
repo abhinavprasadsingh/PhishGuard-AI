@@ -82,6 +82,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          # Another workflow may have published the same model while this run
+          # was recovering it. In that case, avoid a redundant non-fast-forward push.
+          if git cat-file -e origin/main:models/phishing_model.joblib 2>/dev/null; then
+            echo "A model is already present on main; no push is needed."
+            exit 0
+          fi
           git add -f models/phishing_model.joblib
           if git diff --cached --quiet; then
             echo "The committed model is already up to date."
