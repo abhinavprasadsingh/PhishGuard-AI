@@ -8,6 +8,8 @@ from urllib.parse import urlparse
 import streamlit as st
 import streamlit.components.v1 as components
 
+from src.csv_safety import sanitize_csv_for_spreadsheet
+
 # Google Analytics 4 page-view tracking. Streamlit renders this snippet in
 # a component iframe, so explicitly set the public app URL as page_location.
 # This must be verified in GA4 Realtime after the app redeploys.
@@ -403,7 +405,7 @@ with tool_tabs[0]:
                 st.dataframe(result_df, hide_index=True, use_container_width=True)
                 st.download_button(
                     "⬇️ Download scan report (CSV)",
-                    data=result_df.to_csv(index=False).encode("utf-8"),
+                    data=sanitize_csv_for_spreadsheet(result_df).to_csv(index=False).encode("utf-8"),
                     file_name="phishshield_bulk_scan.csv",
                     mime="text/csv",
                     use_container_width=True,
@@ -457,7 +459,7 @@ with tool_tabs[2]:
         h2.metric("Unique hostnames", history_df["Hostname"].nunique())
         h3.metric("High rule signals (45+)", int((pd.to_numeric(history_df["Rule signal score"], errors="coerce") >= 45).sum()))
         st.dataframe(history_df.iloc[::-1], hide_index=True, use_container_width=True)
-        st.download_button("⬇️ Export session history", history_df.to_csv(index=False).encode("utf-8"), "phishshield_session_history.csv", "text/csv")
+        st.download_button("⬇️ Export session history", sanitize_csv_for_spreadsheet(history_df).to_csv(index=False).encode("utf-8"), "phishshield_session_history.csv", "text/csv")
         if st.button("Clear session history", key="phishshield_clear_history"):
             st.session_state.scan_history = []
             st.rerun()
