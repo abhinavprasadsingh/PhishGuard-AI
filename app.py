@@ -230,6 +230,19 @@ if submitted:
         normalized = normalize_url(url_input)
         features = extract_features(normalized)
         model = load_model()
+        # Session-only scan history: it is cleared when this Streamlit session ends.
+        if "scan_history" not in st.session_state:
+            st.session_state.scan_history = []
+        _, history_score, history_reasons = heuristic_assessment(features)
+        history_record = {
+            "Scanned at (UTC)": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+            "URL": normalized,
+            "Hostname": urlparse(normalized).hostname or "",
+            "Rule signal score": history_score,
+            "Warning signals": "; ".join(history_reasons),
+        }
+        st.session_state.scan_history.append(history_record)
+        st.session_state.scan_history = st.session_state.scan_history[-200:]
         st.markdown("---")
         st.markdown("### Assessment")
         if model is not None:
@@ -329,6 +342,143 @@ else:
         st.markdown('<div class="panel"><h4>🧬 Feature breakdown</h4><p class="muted">Explore hostname, length, protocol, and other structural indicators.</p></div>', unsafe_allow_html=True)
     with c3:
         st.markdown('<div class="panel"><h4>🔐 Privacy-minded</h4><p class="muted">The app analyzes text only and never opens the destination URL.</p></div>', unsafe_allow_html=True)
+
+
+st.markdown("---")
+st.markdown("## 🧰 Security workspace")
+st.caption("Additional tools for batch checks, domain structure, scan history, and model evaluation.")
+
+tool_tabs = st.tabs(["📄 Bulk scanner", "🌐 Domain intelligence", "🕘 History & analytics", "📊 Model dashboard"])
+
+with tool_tabs[0]:
+    st.markdown("### Analyze a CSV of URLs")
+    st.write("Upload a CSV with a column named url. URLs are parsed locally; the app does not open them.")
+    bulk_file = st.file_uploader("Choose CSV file", type=["csv"], key="phishshield_bulk_csv")
+    if bulk_file is not None:
+        try:
+            import pandas as pd
+            bulk_df = pd.read_csv(bulk_file)
+            if "url" not in bulk_df.columns:
+                st.error("Your CSV needs a column named url.")
+            elif len(bulk_df) > 1000:
+                st.error("For this demo, upload at most 1,000 URLs per file.")
+            else:
+                bulk_model = load_model()
+                batch_rows = []
+                for raw_url in bulk_df["url"].fillna("").astype(str):
+                    try:
+                        clean_url = normalize_url(raw_url)
+                        feat = extract_features(clean_url)
+                        _, rule_score, reasons = heuristic_assessment(feat)
+                        prediction = "Heuristic only (no model file)"
+                        model_confidence = None
+                        if bulk_model is not None:
+                            import pandas as pd
+                            model_row = pd.DataFrame([[feat[name] for name in FEATURES]], columns=FEATURES)
+                            pred_value = int(bulk_model.predict(model_row)[0])
+                            prediction = "Potential phishing" if pred_value == 1 else "Likely legitimate (model class)"
+                            if hasattr(bulk_model, "predict_proba"):
+                                probs = bulk_model.predict_proba(model_row)[0]
+                                model_confidence = float(max(probs))
+                        batch_rows.append({
+                            "Input URL": raw_url,
+                            "Normalized URL": clean_url,
+                            "Model result": prediction,
+                            "Model confidence (not safety probability)": "" if model_confidence is None else round(model_confidence, 4),
+                            "Rule signal score (0-100)": rule_score,
+                            "Warning signals": "; ".join(reasons),
+                            "Validation": "OK",
+                        })
+                    except ValueError as exc:
+                        batch_rows.append({
+                            "Input URL": raw_url,
+                            "Normalized URL": "",
+                            "Model result": "Not analyzed",
+                            "Model confidence (not safety probability)": "",
+                            "Rule signal score (0-100)": "",
+                            "Warning signals": "",
+                            "Validation": str(exc),
+                        })
+                result_df = pd.DataFrame(batch_rows)
+                st.dataframe(result_df, hide_index=True, use_container_width=True)
+                st.download_button(
+                    "⬇️ Download scan report (CSV)",
+                    data=result_df.to_csv(index=False).encode("utf-8"),
+                    file_name="phishshield_bulk_scan.csv",
+                    mime="text/csv",
+                    use_container_width=True,
+                )
+                st.caption("Rule scores are transparent indicators, not calibrated probabilities. Model confidence is not a guarantee of safety.")
+        except Exception as exc:
+            st.error(f"Could not read this CSV: {exc}")
+
+with tool_tabs[1]:
+    st.markdown("### Domain intelligence (offline URL parsing)")
+    st.write("This section describes URL structure only. It does not perform DNS, WHOIS, certificate, reputation, or domain-age lookups.")
+    intel_input = st.text_input("URL for domain breakdown", placeholder="https://login.example.com/account", key="phishshield_domain_input")
+    if st.button("Inspect domain structure", key="phishshield_domain_button", type="primary"):
+        try:
+            intel_url = normalize_url(intel_input)
+            intel_parsed = urlparse(intel_url)
+            intel_host = (intel_parsed.hostname or "").lower().rstrip(".")
+            try:
+                ipaddress.ip_address(intel_host.strip("[]"))
+                host_kind = "IP address"
+            except ValueError:
+                host_kind = "Domain hostname"
+            labels = [part for part in intel_host.split(".") if part]
+            root_hint = ".".join(labels[-2:]) if len(labels) >= 2 else intel_host
+            d1, d2, d3 = st.columns(3)
+            d1.metric("Scheme", intel_parsed.scheme.upper())
+            d2.metric("Hostname type", host_kind)
+            d3.metric("Subdomain labels", max(0, len(labels) - 2))
+            st.markdown("**Parsed details**")
+            st.dataframe([
+                {"Property": "Hostname", "Value": intel_host},
+                {"Property": "Approximate last two labels (not always registrable domain)", "Value": root_hint},
+                {"Property": "Port", "Value": str(intel_parsed.port or "Default / not specified")},
+                {"Property": "Path length", "Value": str(len(intel_parsed.path))},
+                {"Property": "Query present", "Value": "Yes" if intel_parsed.query else "No"},
+                {"Property": "HTTPS used", "Value": "Yes" if intel_parsed.scheme == "https" else "No"},
+            ], hide_index=True, use_container_width=True)
+            st.info("HTTPS encrypts a connection but does not prove the site is legitimate. The last-two-label hint can be wrong for domains such as co.uk.")
+        except ValueError as exc:
+            st.error(str(exc))
+
+with tool_tabs[2]:
+    st.markdown("### Session scan history")
+    st.caption("History is stored only in this active Streamlit session and is not written to a database.")
+    history = st.session_state.get("scan_history", [])
+    if history:
+        import pandas as pd
+        history_df = pd.DataFrame(history)
+        h1, h2, h3 = st.columns(3)
+        h1.metric("Scans this session", len(history_df))
+        h2.metric("Unique hostnames", history_df["Hostname"].nunique())
+        h3.metric("High rule signals (45+)", int((pd.to_numeric(history_df["Rule signal score"], errors="coerce") >= 45).sum()))
+        st.dataframe(history_df.iloc[::-1], hide_index=True, use_container_width=True)
+        st.download_button("⬇️ Export session history", history_df.to_csv(index=False).encode("utf-8"), "phishshield_session_history.csv", "text/csv")
+        if st.button("Clear session history", key="phishshield_clear_history"):
+            st.session_state.scan_history = []
+            st.rerun()
+    else:
+        st.info("Analyze a URL above or use the bulk scanner to begin reviewing results. Single-URL scans appear here.")
+
+with tool_tabs[3]:
+    st.markdown("### Documented model evaluation")
+    st.write("These are the repository's recorded held-out dataset results, not a live measurement of whichever model file is currently loaded by this app.")
+    st.caption("Dataset: UCI PhiUSIIL Phishing URL dataset. The evaluation report notes approximate domain grouping and model selection on the test split; use caution when interpreting these results.")
+    import pandas as pd
+    metrics_df = pd.DataFrame([
+        {"Model": "HistGradientBoosting", "Accuracy": 0.997, "Precision": 0.999, "Recall": 0.994, "F1": 0.996, "Average precision": 0.999},
+        {"Model": "Random Forest", "Accuracy": 0.997, "Precision": 0.998, "Recall": 0.994, "F1": 0.996, "Average precision": 0.998},
+        {"Model": "Logistic Regression", "Accuracy": 0.995, "Precision": 0.999, "Recall": 0.989, "F1": 0.994, "Average precision": 0.998},
+    ])
+    st.dataframe(metrics_df.style.format({col: "{:.1%}" for col in ["Accuracy", "Precision", "Recall", "F1", "Average precision"]}), hide_index=True, use_container_width=True)
+    st.bar_chart(metrics_df.set_index("Model")[["Precision", "Recall", "F1", "Average precision"]])
+    st.markdown("**Selected model confusion matrix**")
+    st.dataframe(pd.DataFrame([[26759, 19], [125, 20225]], index=["Actual legitimate", "Actual phishing"], columns=["Predicted legitimate", "Predicted phishing"]), use_container_width=True)
+    st.caption("The model artifact is not committed to the repository by default, so these documented metrics do not confirm that the live app is currently running the trained model. See reports/evaluation.md for methodology and limitations.")
 
 st.markdown("---")
 st.markdown('<p class="muted">PhishShield is an educational awareness project, not a guarantee of safety or a replacement for browser protection and professional security tools.</p>', unsafe_allow_html=True)
